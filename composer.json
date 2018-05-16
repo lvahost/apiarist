@@ -1,0 +1,12 @@
+{
+    "name": "thepirateorange/hiveku-laravel-analytics",
+    "description": "A Laravel 5 package for handling analytics in the application. It's like an internal version of Google Analytics.",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Jonathan Tordesillas",
+            "email": "thepirateorange@gmail.com"
+        }
+    ],
+    "require": {}
+}
