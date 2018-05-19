@@ -1,0 +1,54 @@
+{
+  "name": "thepirateorange/apiarist",
+  "description": "Laravel internal analytics package.",
+  "license": "",
+  "keywords": [
+    "apiarist"
+  ],
+  "type": "library",
+  "authors": [
+    {
+      "name": "Jonathan Tordesillas",
+      "email": "thepirateorange@gmail.com"
+    }
+  ],
+  "require": {
+    "php": ">=7.1",
+    "illuminate/support": "~5.6.0"
+  },
+  "require-dev": {
+    "orchestra/testbench": "~3.6.0",
+    "phpunit/phpunit": "~7.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "thepirateorange\\Apiarist\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "thepirateorange\\Apiarist\\Tests\\": "tests"
+    },
+    "files": [
+      "vendor/phpunit/phpunit/src/Framework/Assert/Functions.php"
+    ]
+  },
+  "scripts": {
+    "phpunit": "phpunit"
+  },
+  "extra": {
+    "laravel": {
+    	"providers": [
+        	"thepirateorange\\Apiarist\\ServiceProvider"
+		],
+		"aliases": {
+			"Apiarist": "thepirateorange\\Apiarist\\Facades\\ApiaristFacade.php"
+		}
+	}
+  },
+  "config": {
+    "preferred-install": "dist",
+    "sort-packages": true,
+    "optimize-autoloader": true
+  }
+}
