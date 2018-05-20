@@ -9,12 +9,15 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
     public function boot()
     {
 		# Load Routes
-	    $this->loadRoutesFrom(__DIR__.'/routes/api.php');
+	    $this->loadRoutesFrom(__DIR__.'/routes/main.php');
 
 		# Load Migrations
-        $this->publishes([
-            __DIR__ . '/database/migrations' => $this->app->databasePath() . '/migrations'
-        ], 'migrations');
+		$this->loadMigrationsFrom(__DIR__.'/database/migrations');
+
+		# Publish Migrations
+        // $this->publishes([
+        //     __DIR__ . '/database/migrations' => $this->app->databasePath() . '/migrations'
+        // ], 'migrations');
 
 		# Publish Config
         // $this->publishes([
@@ -28,6 +31,9 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
         //     self::CONFIG_PATH,
         //     'apiarist'
         // );
+
+		# Load Views
+		$this->loadViewsFrom(__DIR__ . '/resources/views', 'apiarist');
 
 		# Bind
         $this->app->bind('apiarist', function () {

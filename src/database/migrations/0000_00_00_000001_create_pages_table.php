@@ -21,17 +21,17 @@ class CreatePagesTable extends Migration
             [
                 'page_project' => '1',
                 'page_title' => 'Home',
-                'page_desc' => '',
+                'page_desc' => 'Homepage.',
             ],
             [
                 'page_project' => '1',
                 'page_title' => 'About Us',
-                'page_desc' => '',
+                'page_desc' => 'The page that tells you things.',
             ],
             [
                 'page_project' => '1',
                 'page_title' => 'Contact Us',
-                'page_desc' => '',
+                'page_desc' => 'To reach us.',
             ]
         ];
 

@@ -5,7 +5,7 @@ Route::group(['prefix' => 'api/apiarist', 'namespace' => 'thepirateorange\Apiari
 
 	Route::get('/', function() {
 
-		return \thepirateorange\Apiarist\Apiarist::trackPage();
+		return \thepirateorange\Apiarist\Apiarist::trackPage(1);
 
 	});
 

@@ -5,6 +5,7 @@ namespace thepirateorange\Apiarist;
 use thepirateorange\Apiarist\app\Models\ApiaristProjects;
 use thepirateorange\Apiarist\app\Models\ApiaristTraffic;
 use thepirateorange\Apiarist\app\Models\ApiaristPages;
+use DB;
 
 class Apiarist {
 
@@ -37,10 +38,59 @@ class Apiarist {
 		$data['project'] = ApiaristProjects::findOrFail($project_id);
 
 		# [Optional] Include Project Pages
-		if($pages) $data['pages'] = ApiaristPages::where('page_project', $project_id)->get();
+		if($pages) {
+
+			# Get Pages
+			$data['pages'] = ApiaristPages::where('page_project', $project_id)->get();
+
+			foreach($data['pages'] as $page) {
+
+				$page->views = ApiaristTraffic::where('traffic_page', $page->id)->count();
+
+			}
+		}
+
+		# Prepare Bounce Rate Data
+		$traffic = ApiaristTraffic::where('traffic_project', $project_id)->count();
+		$bouncers = ApiaristTraffic::where('traffic_project', $project_id)
+			->select('*', DB::raw('COUNT(*) as total'))
+			->groupBy('ip_address')
+			->having('total', '=' , 1)
+			->get();
+
+		# Bounce Rate
+		$data['project']->bounce_rate = ($bouncers->count() / $traffic);
 
 		# Return Project
 		return $data;
+
+	}
+
+	# Get Project Traffic
+	public static function getProjectTraffic($project_id) {
+
+		# Find Project
+		$data['project'] = ApiaristProjects::findOrFail($project_id);
+
+		# Get Pages
+		$pages_2 = ApiaristPages::where('page_project', $project_id)
+			->rightJoin('apiarist_traffic', 'apiarist_pages.id', '=', 'apiarist_traffic.traffic_page')
+			->select('*', DB::raw('COUNT(*) as views'))
+			->groupBy('apiarist_pages.id')
+			->having('views', '=' , 0);
+
+		$pages = ApiaristPages::where('page_project', $project_id)
+			->leftJoin('apiarist_traffic', 'apiarist_pages.id', '=', 'apiarist_traffic.traffic_page')
+			->select('*', DB::raw('COUNT(*) as views'))
+			->groupBy('apiarist_pages.id')
+			->unionAll($pages_2)
+			->get();
+
+		# Return Data
+		return $pages;
+
+		# Get Traffic
+		// $traffic = ApiaristTraffic::where('traffic_project', $project_id)-get();
 
 	}
 
@@ -119,6 +169,7 @@ class Apiarist {
 
 		# Prepare Data
 		$data['traffic_page'] = $page->id;
+		$data['traffic_project'] = $page->page_project;
 		$data['ip_address'] = $_SERVER['REMOTE_ADDR'];
 		$data['user_agent'] = $_SERVER['HTTP_USER_AGENT'];
 
@@ -127,6 +178,20 @@ class Apiarist {
 
 		# Return Traffic
 		return $traffic;
+
+	}
+
+	# Get Page Views
+	public static function getPageViews($page_id) {
+
+		# Find Page
+		$page = ApiaristPages::findOrFail($page_id);
+
+		# Get Traffic
+		$traffic = ApiaristTraffic::where('traffic_page', $page->id);
+
+		# Return Page Views
+		return $traffic->count();
 
 	}
 
@@ -148,11 +213,20 @@ class Apiarist {
 		# End Date
 		if($end_date != false) $traffic->where('created_at', '<=', $end_date);
 
+		# Prepare Data
+		$data['traffic'] = $traffic;
+
+		# Get Bounce Rate
+		$data['bounce_rate'] = 'something';
+
 		# Return Traffic
-		return $traffic;
+		return $data;
 
 	}
 
+	# Get Page Bounce Rate
+	public static function getBounceRate($page_id) {
 
+	}
 
 }

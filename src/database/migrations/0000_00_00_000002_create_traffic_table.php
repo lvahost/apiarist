@@ -10,6 +10,7 @@ class CreateTrafficTable extends Migration
         Schema::create('apiarist_traffic', function(Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('traffic_page');
+            $table->unsignedInteger('traffic_project');
 			$table->string('ip_address');
 			$table->string('user_agent');
             $table->softDeletes();

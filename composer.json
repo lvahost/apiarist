@@ -1,6 +1,7 @@
 {
   "name": "thepirateorange/apiarist",
   "description": "Laravel internal analytics package.",
+  "license": "",
   "keywords": [
     "apiarist"
   ],

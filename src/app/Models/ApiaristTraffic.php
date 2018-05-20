@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class ApiaristTraffic extends Model
 {
 	# Mass Assignable
-	protected $fillable = ['traffic_page', 'ip_address', 'user_agent'];
+	protected $fillable = ['traffic_page', 'traffic_project', 'ip_address', 'user_agent'];
 
 	# Declare Table
     protected $table = 'apiarist_traffic';
