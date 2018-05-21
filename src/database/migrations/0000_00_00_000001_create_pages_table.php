@@ -13,6 +13,8 @@ class CreatePagesTable extends Migration
             $table->unsignedInteger('page_project')->default(1);
             $table->string('page_title');
             $table->string('page_desc')->nullable();
+			$table->string('external_page_id');
+			$table->string('external_page_project');
             $table->softDeletes();
             $table->timestamps();
         });

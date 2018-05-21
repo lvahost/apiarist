@@ -10,13 +10,14 @@ class CreateProjectsTable extends Migration
         Schema::create('apiarist_projects', function(Blueprint $table)
         {
             $table->increments('id');
+			$table->string('external_project_id');
             $table->string('project_name');
             $table->string('project_desc')->nullable();
             $table->string('project_owner');
             $table->softDeletes();
             $table->timestamps();
         });
-        
+
         DB::table('apiarist_projects')->insert([
             'project_name' => 'Unknown Project',
             'project_desc' => 'This is the default project. This exists to let you know it exists.',
