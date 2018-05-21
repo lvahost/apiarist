@@ -59,7 +59,8 @@ class Apiarist {
 			->get();
 
 		# Bounce Rate
-		$data['project']->bounce_rate = ($bouncers->count() / $traffic);
+		if($bouncers->count() > 0 && $traffic > 0) $data['project']->bounce_rate = ($bouncers->count() / $traffic);
+		else $data['project']->bounce_rate = 0;
 
 		# Return Project
 		return $data;
