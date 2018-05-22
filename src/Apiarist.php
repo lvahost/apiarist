@@ -67,8 +67,14 @@ class Apiarist {
 			->having('total', '=' , 1)
 			->get();
 
-		# Bounce Rate
-		$data['project']->bounce_rate = ($bouncers->count() / $traffic);
+		# Bounce Rate, Check If Divides By Zero
+		if($bouncers->count() > 0 && $traffic > 0) {
+			$data['project']->bounce_rate = 0;
+		}
+
+		else {
+			$data['project']->bounce_rate = ($bouncers->count() / $traffic);
+		}
 
 		# Return Project
 		return $data;
