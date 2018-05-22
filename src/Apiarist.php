@@ -32,10 +32,17 @@ class Apiarist {
 	}
 
 	# Get Project
-	public static function getProject($project_id, $pages = false) {
+	public static function getProject($project_id, $pages = false, $external = false) {
 
-		# Find Project
-		$data['project'] = ApiaristProjects::findOrFail($project_id);
+		# Check If External
+		if($external) {
+			$data['project'] = ApiaristProjects::where('external_project_id', $project_id)->first();
+		}
+
+		# Else, Find Project
+		else {
+			$data['project'] = ApiaristProjects::findOrFail($project_id);
+		}
 
 		# [Optional] Include Project Pages
 		if($pages) {
@@ -43,11 +50,13 @@ class Apiarist {
 			# Get Pages
 			$data['pages'] = ApiaristPages::where('page_project', $project_id)->get();
 
+			# Modify Pages, Include Page Views
 			foreach($data['pages'] as $page) {
 
 				$page->views = ApiaristTraffic::where('traffic_page', $page->id)->count();
 
 			}
+
 		}
 
 		# Prepare Bounce Rate Data
@@ -59,8 +68,7 @@ class Apiarist {
 			->get();
 
 		# Bounce Rate
-		if($bouncers->count() > 0 && $traffic > 0) $data['project']->bounce_rate = ($bouncers->count() / $traffic);
-		else $data['project']->bounce_rate = 0;
+		$data['project']->bounce_rate = ($bouncers->count() / $traffic);
 
 		# Return Project
 		return $data;
