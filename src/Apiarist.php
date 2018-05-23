@@ -15,12 +15,11 @@ class Apiarist {
 		# Gather Projects
 		$projects = ApiaristProjects::paginate($num_results);
 
-		$projects->fuwa = $pages;
-
 		# Process Data
 		if(strtolower($pages) === 'true' OR $pages === true) {
 			foreach($projects as $project) {
 
+				# Attach Pages
 				$project->pages = ApiaristPages::where('page_project', $project->id)->get();
 
 			}
@@ -37,6 +36,8 @@ class Apiarist {
 		# Check If External
 		if($external) {
 			$data['project'] = ApiaristProjects::where('external_project_id', $project_id)->first();
+
+			if(count($data['project']) < 1) return false;
 		}
 
 		# Else, Find Project
@@ -69,11 +70,11 @@ class Apiarist {
 
 		# Bounce Rate, Check If Divides By Zero
 		if($bouncers->count() > 0 && $traffic > 0) {
-			$data['project']->bounce_rate = 0;
+			$data['project']->bounce_rate = ($bouncers->count() / $traffic);
 		}
 
 		else {
-			$data['project']->bounce_rate = ($bouncers->count() / $traffic);
+			$data['project']->bounce_rate = 0;
 		}
 
 		# Return Project
@@ -106,6 +107,34 @@ class Apiarist {
 
 		# Get Traffic
 		// $traffic = ApiaristTraffic::where('traffic_project', $project_id)-get();
+
+	}
+
+	# Get Project Views
+	public static function getProjectViews($project_id) {
+
+		# Find Project
+		$project = ApiaristProjects::findOrFail($project_id);
+
+		# Find Traffic
+		$traffic = ApiaristTraffic::where('traffic_project', $project->id)->count();
+
+		# Return Data
+		return $traffic;
+
+	}
+
+	# Get Project 24H Visits
+	public static function getProjectViews24H($project_id) {
+
+		# Find Project
+		$project = ApiaristProjects::findOrFail($project_id);
+
+		# Find Traffic
+		$traffic = ApiaristTraffic::where('traffic_project', $project->id)->where('created_at', '>=', \Carbon\Carbon::now()->subDay())->count();
+
+		# Return Data
+		return $traffic;
 
 	}
 
@@ -181,6 +210,26 @@ class Apiarist {
 
 		# Find Page
 		$page = ApiaristPages::findOrFail($page_id);
+
+		# Prepare Data
+		$data['traffic_page'] = $page->id;
+		$data['traffic_project'] = $page->page_project;
+		$data['ip_address'] = $_SERVER['REMOTE_ADDR'];
+		$data['user_agent'] = $_SERVER['HTTP_USER_AGENT'];
+
+		# Create
+		$traffic = ApiaristTraffic::create($data);
+
+		# Return Traffic
+		return $traffic;
+
+	}
+
+	# Track External Page
+	public static function trackExternalPage($external_page_id) {
+
+		# Find Page
+		$page = ApiaristPages::where('external_page_id', $external_page_id)->first();
 
 		# Prepare Data
 		$data['traffic_page'] = $page->id;
