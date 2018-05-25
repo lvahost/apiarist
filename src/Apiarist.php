@@ -15,11 +15,12 @@ class Apiarist {
 		# Gather Projects
 		$projects = ApiaristProjects::paginate($num_results);
 
+		$projects->fuwa = $pages;
+
 		# Process Data
 		if(strtolower($pages) === 'true' OR $pages === true) {
 			foreach($projects as $project) {
 
-				# Attach Pages
 				$project->pages = ApiaristPages::where('page_project', $project->id)->get();
 
 			}
@@ -36,7 +37,7 @@ class Apiarist {
 		# Check If External
 		if($external) {
 			$data['project'] = ApiaristProjects::where('external_project_id', $project_id)->first();
-
+			
 			if(count($data['project']) < 1) return false;
 		}
 
@@ -109,33 +110,33 @@ class Apiarist {
 		// $traffic = ApiaristTraffic::where('traffic_project', $project_id)-get();
 
 	}
-
+	
 	# Get Project Views
 	public static function getProjectViews($project_id) {
-
+		
 		# Find Project
 		$project = ApiaristProjects::findOrFail($project_id);
-
+		
 		# Find Traffic
 		$traffic = ApiaristTraffic::where('traffic_project', $project->id)->count();
-
+		
 		# Return Data
 		return $traffic;
-
+		
 	}
-
+	
 	# Get Project 24H Visits
 	public static function getProjectViews24H($project_id) {
-
+		
 		# Find Project
 		$project = ApiaristProjects::findOrFail($project_id);
-
+		
 		# Find Traffic
 		$traffic = ApiaristTraffic::where('traffic_project', $project->id)->where('created_at', '>=', \Carbon\Carbon::now()->subDay())->count();
-
+		
 		# Return Data
 		return $traffic;
-
+		
 	}
 
 	# Create Project
